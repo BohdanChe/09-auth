@@ -1,6 +1,6 @@
 import type { Note } from "@/types/note";
 import type { User } from "@/types/user";
-import { api } from "@/lib/api";
+import { api } from "@/lib/api/api";
 
 // server helpers - cookies may need to be forwarded via headers parameter
 export interface NotesResponse {

@@ -20,8 +20,8 @@ export default function SignInPage() {
       setUser(user);
       router.push("/profile");
     } catch (err) {
-      const error = err as { response?: { data?: { message?: string } } };
-      setError(error?.response?.data?.message || "Login failed");
+      const errorData = err as { response?: { data?: { message?: string } } };
+      setError(errorData?.response?.data?.message || "Login failed");
     }
   };
 

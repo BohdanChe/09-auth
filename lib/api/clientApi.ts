@@ -1,6 +1,6 @@
 import type { Note, NewNote } from "@/types/note";
 import type { User } from "@/types/user";
-import { api } from "@/lib/api";
+import { api } from "@/lib/api/api";
 
 /*
  * Client-side API helpers. These can be called from React components.
