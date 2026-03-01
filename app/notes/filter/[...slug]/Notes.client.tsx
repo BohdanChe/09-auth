@@ -6,7 +6,7 @@ import css from "./page.module.css";
 import { useQuery } from "@tanstack/react-query";
 import { useDebouncedCallback } from "use-debounce";
 
-import { getNotes } from "@/lib/api";
+import { fetchNotes as getNotes } from "@/lib/api/clientApi";
 import NoteList from "@/components/NoteList/NoteList";
 import EmptyState from "@/components/EmptyState/EmptyState";
 import Pagination from "@/components/Pagination/Pagination";
