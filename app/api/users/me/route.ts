@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import axios from 'axios';
 import { cookies } from 'next/headers';
+import { isAxiosError } from 'axios';
+import { api, ApiError } from '../../api';
+import { logErrorResponse } from '../../_utils/utils';
 
-const api = axios.create({
-  baseURL: 'https://notehub-api.goit.study',
-  withCredentials: true,
-});
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
@@ -17,12 +16,15 @@ export async function GET() {
     });
     return NextResponse.json(res.data, { status: res.status });
   } catch (error: unknown) {
-    const err = error as { response?: { data: unknown } };
-    console.error('User error:', err?.response?.data);
-    return NextResponse.json(
-      { error: (error as Error)?.message || 'Internal Server Error' },
-      { status: 500 }
-    );
+    if (isAxiosError(error)) {
+      const err = error as ApiError;
+      logErrorResponse(err?.response?.data);
+      const status = err?.response?.status || 500;
+      return NextResponse.json({ error: err.message, response: err?.response?.data }, { status });
+    }
+
+    console.error('User error:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
@@ -38,11 +40,14 @@ export async function PATCH(request: NextRequest) {
     });
     return NextResponse.json(res.data, { status: res.status });
   } catch (error: unknown) {
-    const err = error as { response?: { data: unknown } };
-    console.error('Update user error:', err?.response?.data);
-    return NextResponse.json(
-      { error: (error as Error)?.message || 'Internal Server Error' },
-      { status: 500 }
-    );
+    if (isAxiosError(error)) {
+      const err = error as ApiError;
+      logErrorResponse(err?.response?.data);
+      const status = err?.response?.status || 500;
+      return NextResponse.json({ error: err.message, response: err?.response?.data }, { status });
+    }
+
+    console.error('Update user error:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

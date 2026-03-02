@@ -5,9 +5,11 @@ import { useEffect, useState } from "react";
 import css from "./page.module.css";
 import Image from "next/image";
 import { getMe, updateMe } from "@/lib/api/clientApi";
+import { useAuthStore } from "@/lib/store/authStore";
 
 export default function EditProfilePage() {
   const router = useRouter();
+  const setUser = useAuthStore((s) => s.setUser);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [avatar, setAvatar] = useState("");
@@ -24,7 +26,8 @@ export default function EditProfilePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await updateMe({ username });
+    const updated = await updateMe({ username });
+    setUser(updated);
     router.push("/profile");
   };
 

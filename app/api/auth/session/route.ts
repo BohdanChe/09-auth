@@ -1,12 +1,9 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import axios from 'axios';
 import { parse } from "cookie";
-
-const api = axios.create({
-  baseURL: 'https://notehub-api.goit.study',
-  withCredentials: true,
-});
+import { isAxiosError } from "axios";
+import { api, ApiError } from "../../api";
+import { logErrorResponse } from "../../_utils/utils";
 
 export async function GET() {
   try {
@@ -48,8 +45,13 @@ export async function GET() {
     }
     return NextResponse.json({ success: false }, { status: 200 });
   } catch (error: unknown) {
-    const err = error as { response?: { data: unknown } };
-    console.error('Session check error:', err?.response?.data);
+    if (isAxiosError(error)) {
+      const err = error as ApiError;
+      logErrorResponse(err?.response?.data);
+      return NextResponse.json({ success: false }, { status: err?.response?.status || 200 });
+    }
+
+    console.error('Session check error:', error);
     return NextResponse.json({ success: false }, { status: 200 });
   }
 }

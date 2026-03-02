@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import axios from 'axios';
 import { cookies } from 'next/headers';
-
-const api = axios.create({
-  baseURL: 'https://notehub-api.goit.study',
-  withCredentials: true,
-});
+import { isAxiosError } from 'axios';
+import { api, ApiError } from '../api';
+import { logErrorResponse } from '../_utils/utils';
 
 export async function GET(request: NextRequest) {
   try {
@@ -29,11 +26,15 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(res.data, { status: res.status });
   } catch (error: unknown) {
+    if (isAxiosError(error)) {
+      const err = error as ApiError;
+      logErrorResponse(err?.response?.data);
+      const status = err?.response?.status || 500;
+      return NextResponse.json({ error: err.message, response: err?.response?.data }, { status });
+    }
+
     console.error('Notes GET error:', error);
-    return NextResponse.json(
-      { error: 'Internal Server Error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
@@ -51,10 +52,14 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(res.data, { status: res.status });
   } catch (error: unknown) {
+    if (isAxiosError(error)) {
+      const err = error as ApiError;
+      logErrorResponse(err?.response?.data);
+      const status = err?.response?.status || 500;
+      return NextResponse.json({ error: err.message, response: err?.response?.data }, { status });
+    }
+
     console.error('Notes POST error:', error);
-    return NextResponse.json(
-      { error: 'Internal Server Error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

@@ -1,4 +1,4 @@
-import { fetchNotes as getNotes } from "@/lib/api/clientApi";
+import { fetchNotes as getNotes } from "@/lib/api/serverApi";
 import { Metadata } from "next";
 import {
   QueryClient,
