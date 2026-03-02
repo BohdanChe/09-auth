@@ -57,8 +57,10 @@ export async function proxy(req: NextRequest) {
   }
 
   if (isPublic && authenticated) {
+    // logged‑in users shouldn't be able to visit the sign-in/sign-up pages
+    // redirect them back to the **home page** rather than their profile
     const url = req.nextUrl.clone();
-    url.pathname = "/profile";
+    url.pathname = "/"; // <- changed from /profile per feedback
     return NextResponse.redirect(url);
   }
 
