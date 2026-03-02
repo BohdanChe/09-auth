@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { api } from "../../api";
 import { parse } from "cookie";
 import { isAxiosError } from "axios";
-import { api, ApiError } from "../../api";
 import { logErrorResponse } from "../../_utils/utils";
 
 export async function GET() {
@@ -44,14 +44,12 @@ export async function GET() {
       }
     }
     return NextResponse.json({ success: false }, { status: 200 });
-  } catch (error: unknown) {
+  } catch (error) {
     if (isAxiosError(error)) {
-      const err = error as ApiError;
-      logErrorResponse(err?.response?.data);
-      return NextResponse.json({ success: false }, { status: err?.response?.status || 200 });
+      logErrorResponse(error.response?.data);
+      return NextResponse.json({ success: false }, { status: 200 });
     }
-
-    console.error('Session check error:', error);
+    logErrorResponse({ message: (error as Error).message });
     return NextResponse.json({ success: false }, { status: 200 });
   }
 }
