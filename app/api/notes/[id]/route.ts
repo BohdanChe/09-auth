@@ -4,7 +4,10 @@ import { isAxiosError } from 'axios';
 import { api, ApiError } from '../../api';
 import { logErrorResponse } from '../../_utils/utils';
 
-export async function GET(request: NextRequest, context: { params: any }) {
+export async function GET(
+  request: NextRequest,
+  context: { params: { id: string } | Promise<{ id: string }> }
+) {
   try {
     const cookieStore = await cookies();
     const params = context.params;
@@ -31,7 +34,10 @@ export async function GET(request: NextRequest, context: { params: any }) {
   }
 }
 
-export async function DELETE(request: NextRequest, context: { params: any }) {
+export async function DELETE(
+  request: NextRequest,
+  context: { params: { id: string } | Promise<{ id: string }> }
+) {
   try {
     const cookieStore = await cookies();
     const params = context.params;
