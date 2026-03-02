@@ -1,4 +1,5 @@
 import { fetchNoteById as getSingleNote } from "@/lib/api/serverApi";
+import { headers } from "next/headers";
 import {
   dehydrate,
   HydrationBoundary,
@@ -13,9 +14,11 @@ const NotesPreview = async ({ params }: NotesPreviewProps) => {
   const { id } = await params;
 
   const queryClient = new QueryClient();
+  const cookieHeader = headers().get("cookie") || undefined;
+
   await queryClient.prefetchQuery({
     queryKey: ["note", id],
-    queryFn: () => getSingleNote(id),
+    queryFn: () => getSingleNote(id, cookieHeader),
   });
 
   return (
