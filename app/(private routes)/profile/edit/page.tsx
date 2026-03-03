@@ -26,7 +26,7 @@ export default function EditProfilePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const updated = await updateMe({ username });
+    const updated = await updateMe({ username, avatar });
     setUser(updated);
     router.push("/profile");
   };
@@ -59,6 +59,18 @@ export default function EditProfilePage() {
               className={css.input}
               value={username}
               onChange={(e) => setUsername(e.currentTarget.value)}
+            />
+          </div>
+
+          <div className={css.usernameWrapper}>
+            <label htmlFor="avatar">Photo URL:</label>
+            <input
+              id="avatar"
+              type="url"
+              className={css.input}
+              placeholder="https://example.com/avatar.jpg"
+              value={avatar}
+              onChange={(e) => setAvatar(e.currentTarget.value)}
             />
           </div>
 

@@ -22,9 +22,16 @@ export default function SignInPage() {
       setUser(user);
       router.push("/profile");
     } catch (err: unknown) {
-      if (isAxiosError<{ message?: string; error?: string }>(err)) {
+      if (
+        isAxiosError<{
+          message?: string;
+          error?: string;
+          response?: { message?: string };
+        }>(err)
+      ) {
         setError(
           err.response?.data?.message ||
+            err.response?.data?.response?.message ||
             err.response?.data?.error ||
             "Login failed"
         );

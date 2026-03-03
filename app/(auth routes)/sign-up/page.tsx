@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { isAxiosError } from "axios";
 import css from "./page.module.css";
-import { register, login } from "@/lib/api/clientApi";
+import { register } from "@/lib/api/clientApi";
 import { useAuthStore } from "@/lib/store/authStore";
 
 export default function SignUpPage() {
@@ -20,19 +20,18 @@ export default function SignUpPage() {
     setError(""); // очищаємо помилку перед submit
 
     try {
-      // 1️⃣ Реєстрація користувача
-      await register(email, password);
+      const user = await register(email, password);
 
-      // 2️⃣ Логін після реєстрації
-      const user = await login(email, password);
-
-      // 3️⃣ Збереження користувача в стані
       setUser(user);
-
-      // 4️⃣ Редірект на профіль
       router.push("/profile");
     } catch (err: unknown) {
       if (isAxiosError<{ message?: string; error?: string }>(err)) {
+        if (err.response?.status === 409) {
+          setError("Користувач з таким email вже існує. Увійдіть у свій акаунт.");
+          router.push("/sign-in");
+          return;
+        }
+
         setError(
           err.response?.data?.message ||
             err.response?.data?.error ||
