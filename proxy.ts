@@ -45,7 +45,7 @@ export async function proxy(req: NextRequest) {
           return res;
         }
       }
-    } catch (e) {
+    } catch {
       // ignore refresh errors and fallthrough to redirect
     }
   }
