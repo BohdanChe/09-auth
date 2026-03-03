@@ -11,24 +11,23 @@ export async function POST(req: NextRequest) {
 
     const apiRes = await api.post('auth/register', body);
 
-    
     const setCookie = apiRes.headers['set-cookie'];
 
     if (setCookie) {
-  const cookieArray = Array.isArray(setCookie) ? setCookie : [setCookie];
+      const cookieArray = Array.isArray(setCookie) ? setCookie : [setCookie];
 
-  const response = NextResponse.json(apiRes.data, {
-    status: apiRes.status,
-  });
+      const response = NextResponse.json(apiRes.data, {
+        status: apiRes.status,
+      });
 
-  cookieArray.forEach((cookie) => {
-    response.headers.append("Set-Cookie", cookie);
-  });
+      cookieArray.forEach((cookie) => {
+        response.headers.append("Set-Cookie", cookie);
+      });
 
-  return response;
-}
+      return response;
+    }
 
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(apiRes.data, { status: apiRes.status });
   } catch (error) {
     if (isAxiosError(error)) {
       logErrorResponse(error.response?.data);

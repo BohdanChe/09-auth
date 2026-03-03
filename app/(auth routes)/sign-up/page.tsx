@@ -32,8 +32,12 @@ export default function SignUpPage() {
       // 4️⃣ Редірект на профіль
       router.push("/profile");
     } catch (err: unknown) {
-      if (isAxiosError<{ message?: string }>(err)) {
-        setError(err.response?.data?.message || "Failed to register");
+      if (isAxiosError<{ message?: string; error?: string }>(err)) {
+        setError(
+          err.response?.data?.message ||
+            err.response?.data?.error ||
+            "Failed to register"
+        );
         return;
       }
 

@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { isAxiosError } from "axios";
 import css from "./page.module.css";
 import { login } from "@/lib/api/clientApi";
 import { useAuthStore } from "@/lib/store/authStore";
@@ -19,9 +21,17 @@ export default function SignInPage() {
       const user = await login(email, password);
       setUser(user);
       router.push("/profile");
-    } catch (err) {
-      const errorData = err as { response?: { data?: { message?: string } } };
-      setError(errorData?.response?.data?.message || "Login failed");
+    } catch (err: unknown) {
+      if (isAxiosError<{ message?: string; error?: string }>(err)) {
+        setError(
+          err.response?.data?.message ||
+            err.response?.data?.error ||
+            "Login failed"
+        );
+        return;
+      }
+
+      setError("Login failed");
     }
   };
 
@@ -61,6 +71,13 @@ export default function SignInPage() {
             Log in
           </button>
         </div>
+
+        <p className={css.registerHint}>
+          Don&apos;t have an account?{" "}
+          <Link href="/sign-up" className={css.registerLink}>
+            Sign up
+          </Link>
+        </p>
 
         <p className={css.error}>{error}</p>
       </form>
