@@ -68,9 +68,31 @@
     outline: none;
 }
 
+.textarea {
+    padding: 10px 12px;
+    font-size: 16px;
+    border: 1.5px solid #ccc;
+    border-radius: 8px;
+    min-height: 110px;
+    width: 100%;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.textarea:focus {
+    border-color: #0d6efd;
+    outline: none;
+}
+
 .profileInfo p {
     margin: 0;
     font-weight: 500;
+}
+
+.error {
+    color: #dc3545;
+    font-size: 14px;
+    margin: 0;
 }
 
 .saveButton {

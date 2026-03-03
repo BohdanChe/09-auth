@@ -13,22 +13,75 @@ export default function EditProfilePage() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [avatar, setAvatar] = useState("");
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [about, setAbout] = useState("");
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    getMe().then((u) => {
+    Promise.all([
+      getMe(),
+      fetch("/api/users/about", { cache: "no-store" }).then((res) =>
+        res.json() as Promise<{ about?: string }>
+      ),
+    ]).then(([u, aboutResponse]) => {
       setUsername(u.username);
       setEmail(u.email);
       setAvatar(u.avatar);
+      setAbout(aboutResponse.about || "");
       setLoading(false);
     });
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const updated = await updateMe({ username, avatar });
-    setUser(updated);
-    router.push("/profile");
+    setError("");
+
+    try {
+      let nextAvatar = avatar;
+
+      if (avatarFile) {
+        const formData = new FormData();
+        formData.append("avatar", avatarFile);
+
+        const uploadRes = await fetch("/api/users/avatar", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!uploadRes.ok) {
+          const errorData = (await uploadRes.json()) as { error?: string };
+          throw new Error(errorData.error || "Failed to upload photo");
+        }
+
+        const uploadData = (await uploadRes.json()) as { avatar: string };
+        nextAvatar = uploadData.avatar;
+        setAvatar(nextAvatar);
+      }
+
+      const aboutRes = await fetch("/api/users/about", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ about }),
+      });
+
+      if (!aboutRes.ok) {
+        const aboutError = (await aboutRes.json()) as { error?: string };
+        throw new Error(aboutError.error || "Failed to save about text");
+      }
+
+      const updated = await updateMe({ username });
+      setUser({ ...updated, avatar: nextAvatar });
+      router.push("/profile");
+    } catch (submitError) {
+      const message =
+        submitError instanceof Error
+          ? submitError.message
+          : "Failed to update profile";
+      setError(message);
+    }
   };
 
   const handleCancel = () => {
@@ -36,6 +89,15 @@ export default function EditProfilePage() {
   };
 
   if (loading) return <p>Loading...</p>;
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.currentTarget.files?.[0];
+    if (!file) return;
+
+    setAvatarFile(file);
+    const previewUrl = URL.createObjectURL(file);
+    setAvatar(previewUrl);
+  };
 
   return (
     <main className={css.mainContent}>
@@ -63,18 +125,31 @@ export default function EditProfilePage() {
           </div>
 
           <div className={css.usernameWrapper}>
-            <label htmlFor="avatar">Photo URL:</label>
+            <label htmlFor="avatar">Photo:</label>
             <input
               id="avatar"
-              type="url"
+              type="file"
+              accept="image/*"
               className={css.input}
-              placeholder="https://example.com/avatar.jpg"
-              value={avatar}
-              onChange={(e) => setAvatar(e.currentTarget.value)}
+              onChange={handleAvatarChange}
             />
           </div>
 
           <p>Email: {email}</p>
+
+          <div className={css.usernameWrapper}>
+            <label htmlFor="about">About me:</label>
+            <textarea
+              id="about"
+              className={css.textarea}
+              placeholder="Напишіть кілька речень про себе..."
+              value={about}
+              maxLength={500}
+              onChange={(e) => setAbout(e.currentTarget.value)}
+            />
+          </div>
+
+          {error && <p className={css.error}>{error}</p>}
 
           <div className={css.actions}>
             <button type="submit" className={css.saveButton}>

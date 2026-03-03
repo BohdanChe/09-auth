@@ -110,3 +110,25 @@
     gap: 12px;
     margin-top: 20px;
 }
+
+.aboutSection {
+    margin-top: 20px;
+    width: 100%;
+    border-top: 1px solid #e9ecef;
+    padding-top: 16px;
+}
+
+.aboutTitle {
+    margin: 0 0 8px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+
+.aboutText {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #343a40;
+    white-space: pre-wrap;
+}

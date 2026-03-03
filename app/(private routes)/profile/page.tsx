@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
 import { headers } from "next/headers";
+import { cookies } from "next/headers";
 import { getMe } from "@/lib/api/serverApi";
 
 export const dynamic = 'force-dynamic';
@@ -16,6 +17,9 @@ export default async function ProfilePage() {
   const headersList = await headers();
   const cookieHeader = headersList.get("cookie") || undefined;
   const user = await getMe(cookieHeader);
+  const cookieStore = await cookies();
+  const localAvatar = cookieStore.get("localAvatar")?.value;
+  const localBio = cookieStore.get("localBio")?.value;
 
   return (
     <main className={css.mainContent}>
@@ -28,7 +32,7 @@ export default async function ProfilePage() {
         </div>
         <div className={css.avatarWrapper}>
           <Image
-            src={user.avatar}
+            src={localAvatar || user.avatar}
             alt="User Avatar"
             width={120}
             height={120}
@@ -39,6 +43,13 @@ export default async function ProfilePage() {
           <p>Username: {user.username}</p>
           <p>Email: {user.email}</p>
         </div>
+
+        <section className={css.aboutSection}>
+          <h2 className={css.aboutTitle}>Про користувача</h2>
+          <p className={css.aboutText}>
+            {localBio || "Користувач ще не додав інформацію про себе."}
+          </p>
+        </section>
       </div>
     </main>
   );
