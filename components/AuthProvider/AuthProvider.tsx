@@ -12,6 +12,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   const pathname = usePathname();
   const router = useRouter();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const user = useAuthStore((s) => s.user);
   const setUser = useAuthStore((s) => s.setUser);
   const clear = useAuthStore((s) => s.clearIsAuthenticated);
   const [loading, setLoading] = useState(true);
@@ -19,6 +20,12 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   useEffect(() => {
     const privateRoute = PRIVATE_PREFIXES.some((p) => pathname?.startsWith(p));
     const publicAuthRoute = pathname === "/sign-in" || pathname === "/sign-up";
+    const hasValidUser = Boolean(user?.email);
+
+    if (isAuthenticated && hasValidUser && !publicAuthRoute) {
+      setLoading(false);
+      return;
+    }
 
     const verify = async () => {
       setLoading(true);
@@ -49,10 +56,8 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       }
     };
 
-    if (!isAuthenticated || privateRoute) {
-      verify();
-    }
-  }, [pathname, isAuthenticated, router, setUser, clear]);
+    verify();
+  }, [pathname, isAuthenticated, user?.email, router, setUser, clear]);
 
   if (loading) {
     return <Loader />;

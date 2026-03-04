@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { isAxiosError } from "axios";
@@ -78,13 +77,6 @@ export default function SignInPage() {
             Log in
           </button>
         </div>
-
-        <p className={css.registerHint}>
-          Don&apos;t have an account?{" "}
-          <Link href="/sign-up" className={css.registerLink}>
-            Sign up
-          </Link>
-        </p>
 
         <p className={css.error}>{error}</p>
       </form>

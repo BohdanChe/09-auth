@@ -62,9 +62,7 @@ export default function EditProfilePage() {
             />
           </div>
 
-          <div className={css.usernameWrapper}>
-            <p>Email: {email}</p>
-          </div>
+          <p>Email: {email}</p>
 
           <div className={css.actions}>
             <button type="submit" className={css.saveButton}>

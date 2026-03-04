@@ -26,12 +26,6 @@ export default function SignUpPage() {
       router.push("/profile");
     } catch (err: unknown) {
       if (isAxiosError<{ message?: string; error?: string }>(err)) {
-        if (err.response?.status === 409) {
-          setError("Користувач з таким email вже існує. Увійдіть у свій акаунт.");
-          router.push("/sign-in");
-          return;
-        }
-
         setError(
           err.response?.data?.message ||
             err.response?.data?.error ||
@@ -46,7 +40,7 @@ export default function SignUpPage() {
 
   return (
     <main className={css.mainContent}>
-      <h1 className={css.formTitle}>Sign Up</h1>
+      <h1 className={css.formTitle}>Sign up</h1>
       <form className={css.form} onSubmit={handleSubmit}>
         <div className={css.formGroup}>
           <label htmlFor="email">Email</label>

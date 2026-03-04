@@ -61,8 +61,18 @@ export const logout = async (): Promise<void> => {
 };
 
 export const checkSession = async (): Promise<User | null> => {
-  const res = await api.get<User>("/auth/session");
-  return res.data || null;
+  try {
+    const sessionRes = await api.get<{ success?: boolean }>("/auth/session");
+
+    if (!sessionRes.data?.success) {
+      return null;
+    }
+
+    const userRes = await api.get<User>("/users/me");
+    return userRes.data || null;
+  } catch {
+    return null;
+  }
 };
 
 export const getMe = async (): Promise<User> => {

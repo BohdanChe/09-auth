@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/store/authStore";
 import { logout } from "@/lib/api/clientApi";
+import TagsMenu from "@/components/TagsMenu/TagsMenu";
 import css from "./AuthNavigation.module.css";
 
 export default function AuthNavigation() {
@@ -11,6 +12,7 @@ export default function AuthNavigation() {
   const user = useAuthStore((s) => s.user);
   const clear = useAuthStore((s) => s.clearIsAuthenticated);
   const router = useRouter();
+  const isSignedIn = isAuthenticated && Boolean(user?.email);
 
   const handleLogout = async () => {
     try {
@@ -21,9 +23,12 @@ export default function AuthNavigation() {
     }
   };
 
-  if (isAuthenticated && user) {
+  if (isSignedIn && user) {
     return (
       <>
+        <li className={css.navigationItem}>
+          <TagsMenu />
+        </li>
         <li className={css.navigationItem}>
           <Link href="/profile" prefetch={false} className={css.navigationLink}>
             Profile
@@ -43,7 +48,7 @@ export default function AuthNavigation() {
     <>
       <li className={css.navigationItem}>
         <Link href="/sign-in" prefetch={false} className={css.navigationLink}>
-          Login
+          Sign in
         </Link>
       </li>
       <li className={css.navigationItem}>
