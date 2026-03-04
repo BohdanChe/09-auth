@@ -12,16 +12,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
 
     const apiRes = await api.post('auth/register', body);
-    let responseData = apiRes.data;
-    let responseStatus = apiRes.status;
-    let setCookie = apiRes.headers['set-cookie'];
-
-    if (!setCookie) {
-      const loginRes = await api.post('auth/login', body);
-      responseData = loginRes.data;
-      responseStatus = loginRes.status;
-      setCookie = loginRes.headers['set-cookie'];
-    }
+    const setCookie = apiRes.headers['set-cookie'];
 
     if (setCookie) {
       const cookieStore = await cookies();
@@ -43,8 +34,8 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    return NextResponse.json(responseData, {
-      status: responseStatus,
+    return NextResponse.json(apiRes.data, {
+      status: apiRes.status,
     });
   } catch (error) {
     if (isAxiosError(error)) {

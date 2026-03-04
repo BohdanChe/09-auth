@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(apiRes.data, { status: apiRes.status });
     }
 
-    return NextResponse.json(apiRes.data, { status: apiRes.status });
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   } catch (error) {
     if (isAxiosError(error)) {
       logErrorResponse(error.response?.data);

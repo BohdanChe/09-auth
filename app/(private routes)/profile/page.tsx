@@ -45,7 +45,7 @@ export default async function ProfilePage() {
         </div>
 
         <section className={css.aboutSection}>
-          <h2 className={css.aboutTitle}>Про користувача</h2>
+          <h2 className={css.aboutTitle}>About me</h2>
           <p className={css.aboutText}>
             {localBio || "Користувач ще не додав інформацію про себе."}
           </p>
