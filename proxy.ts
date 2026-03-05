@@ -58,7 +58,7 @@ export async function proxy(req: NextRequest) {
 
   if (isPublic && authenticated) {
     const url = req.nextUrl.clone();
-    url.pathname = "/profile";
+    url.pathname = "/";
     return NextResponse.redirect(url);
   }
 

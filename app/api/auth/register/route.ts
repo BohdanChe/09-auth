@@ -32,17 +32,19 @@ export async function POST(req: NextRequest) {
           cookieStore.set('refreshToken', parsed.refreshToken, options);
         }
       }
+
+      return NextResponse.json(apiRes.data, {
+        status: apiRes.status,
+      });
     }
 
-    return NextResponse.json(apiRes.data, {
-      status: apiRes.status,
-    });
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   } catch (error) {
     if (isAxiosError(error)) {
       logErrorResponse(error.response?.data);
       return NextResponse.json(
         { error: error.message, response: error.response?.data },
-       { status: error.response?.status || 500 }
+        { status: error.status }
       );
     }
     logErrorResponse({ message: (error as Error).message });

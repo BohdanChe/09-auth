@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/store/authStore";
 import { logout } from "@/lib/api/clientApi";
-import TagsMenu from "@/components/TagsMenu/TagsMenu";
 import css from "./AuthNavigation.module.css";
 
 export default function AuthNavigation() {
@@ -26,9 +25,6 @@ export default function AuthNavigation() {
   if (isSignedIn && user) {
     return (
       <>
-        <li className={css.navigationItem}>
-          <TagsMenu />
-        </li>
         <li className={css.navigationItem}>
           <Link href="/profile" prefetch={false} className={css.navigationLink}>
             Profile
