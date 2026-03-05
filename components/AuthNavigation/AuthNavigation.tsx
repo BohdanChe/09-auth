@@ -26,6 +26,15 @@ export default function AuthNavigation() {
     return (
       <>
         <li className={css.navigationItem}>
+          <Link
+            href="/notes/filter/all"
+            prefetch={false}
+            className={css.navigationLink}
+          >
+            Notes
+          </Link>
+        </li>
+        <li className={css.navigationItem}>
           <Link href="/profile" prefetch={false} className={css.navigationLink}>
             Profile
           </Link>
